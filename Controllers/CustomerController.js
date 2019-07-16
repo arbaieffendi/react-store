@@ -96,7 +96,7 @@ exports.products = function(req, res) {
 exports.findProduct = function(req, res) {
     
     var id = req.params.id;
-    console.log(id);
+    console.log('findProduct id:'+id);
 
     connection.query('SELECT * FROM product where id = ?',
     [ id ], 
@@ -113,8 +113,7 @@ exports.loadMoreProduct = function(req, res) {
     var offset = parseInt(req.params.offset);
     var limit = parseInt(req.params.limit);
 
-    console.log(offset);
-    console.log(limit);
+    console.log('loadMoreProduct offset:' + offset + ' limit:' + limit );
 
     connection.query('SELECT * FROM PRODUCT LIMIT ?, ?',
     [offset, limit],
@@ -142,6 +141,7 @@ exports.createProduct = function(req, res) {
             console.log(error)
         } else{
             response.ok("Created Successfully!", res)
+            console.log(res);
         }
     });
 
