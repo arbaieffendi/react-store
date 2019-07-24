@@ -3,7 +3,7 @@
  Description : create new order if not exists
  else add new orderitem into the existing order
  update the total of order bill
- update the quantity of product */
+  */
 
 -- USE STORE;
 -- CALL spAddToCart(4, 3, 5);
@@ -30,8 +30,9 @@ BEGIN
     THEN
         SET ORDERID = (SELECT O.ID FROM ORDERS O WHERE O.CUSTOMERID = CUSTOMERID);
     ELSE
-
         SET ORDERID = CONCAT(DATE_FORMAT(TODAY, '%Y%m%d'), CUSTOMERID, '-', TODAYORDERCOUNT+1);
+
+        -- create new order / cart
         INSERT INTO ORDERS (ID, CREATEDATE, CUSTOMERID, `STATUS`, TOTAL)
         SELECT * FROM (SELECT ORDERID, TODAY, CUSTOMERID, 'CART', 0) AS temp
         WHERE NOT EXISTS (
@@ -39,20 +40,25 @@ BEGIN
             FROM ORDERS O
             WHERE O.CUSTOMERID = CUSTOMERID
         ) LIMIT 1;
+    END IF;
 
-        INSERT INTO ORDERITEM(ORDERID, PRODUCTID, PRICE, QUANTITY, UNIT)
-        SELECT ORDERID, P.ID, P.PRICE, QUANTITY, P.UNIT
+    IF NOT EXISTS (SELECT OI.ORDERID FROM ORDERITEM OI WHERE OI.ORDERID = ORDERID AND OI.PRODUCTID = PRODUCTID)
+    THEN
+        -- add to orderitem
+        INSERT INTO ORDERITEM(ID, ORDERID, PRODUCTID, PRICE, QUANTITY, UNIT)
+        SELECT UUID(), ORDERID, P.ID, P.PRICE, QUANTITY, P.UNIT
         FROM PRODUCT P
         WHERE P.ID = PRODUCTID;
-
-        UPDATE ORDERS
-        SET TOTAL = (SELECT SUM(oi.PRICE) FROM orderitem oi WHERE oi.ORDERID = ORDERID)
-        WHERE ID = ORDERID;
-
-        UPDATE PRODUCT P
-        SET P.QUANTITY = P.QUANTITY - QUANTITY
-        WHERE P.ID = PRODUCTID;
-
+    ELSE
+        -- update existing quantity
+        UPDATE ORDERITEM OI
+        SET OI.QUANTITY = OI.QUANTITY + QUANTITY
+        WHERE OI.ORDERID = ORDERID AND OI.PRODUCTID = PRODUCTID;
     END IF;
+
+    -- update orders
+    UPDATE ORDERS
+    SET TOTAL = (SELECT SUM(oi.PRICE*oi.QUANTITY) FROM orderitem oi WHERE oi.ORDERID = ORDERID)
+    WHERE ID = ORDERID;
 
 END;

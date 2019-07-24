@@ -194,3 +194,19 @@ exports.addToCart = function(req,res){
     });
 };
 
+exports.getCartList = function(req, res) {
+
+    var id = req.params.id;
+
+    connection.query('SELECT OI.* FROM ORDERS O INNER JOIN ORDERITEM OI ON O.ID = OI.ORDERID WHERE O.CUSTOMERID = ?',
+    [ id ], 
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok(rows, res)
+            console.log(res);
+        }
+    });
+
+};

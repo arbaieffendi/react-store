@@ -15,5 +15,6 @@ module.exports = function(app) {
     app.route('/product').put(customer.deleteProduct);
     app.route('/product/:offset/:limit').get(customer.loadMoreProduct);
 
-    app.route('/cart')
+    app.route('/cart/:id').get(customer.getCartList);
+    app.route('/cart').post(customer.addToCart);
 };
