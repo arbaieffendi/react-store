@@ -17,4 +17,8 @@ module.exports = function(app) {
 
     app.route('/cart/:id').get(customer.getCartList);
     app.route('/cart').post(customer.addToCart);
+    app.route('/cart/:id/:id/:isAdd').put(customer.updateCartQuantity);
+
+    app.route('/auth/getToken').post(customer.getToken);
+    app.route('/auth/getUser').post(customer.getUser);
 };

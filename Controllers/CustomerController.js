@@ -178,6 +178,23 @@ exports.deleteProduct = function(req, res) {
     });
 };
 
+exports.getCartList = function(req, res) {
+
+    var id = req.params.id;
+
+    connection.query('SELECT OI.*, P.NAME, P.IMAGE_URL FROM ORDERS O INNER JOIN ORDERITEM OI ON O.ID = OI.ORDERID INNER JOIN PRODUCT P ON OI.PRODUCTID = P.ID WHERE O.CUSTOMERID = ?',
+    [ id ], 
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok(rows, res)
+            console.log(res);
+        }
+    });
+
+};
+
 exports.addToCart = function(req,res){
     var customerid = req.body.customerid;
     var productid = req.body.productId;
@@ -194,19 +211,45 @@ exports.addToCart = function(req,res){
     });
 };
 
-exports.getCartList = function(req, res) {
+exports.updateCartQuantity = function(req,res){
+    var customerid = req.body.customerid;
+    var itemid = req.body.itemid;
+    var isadd = req.body.isadd;
 
-    var id = req.params.id;
-
-    connection.query('SELECT OI.* FROM ORDERS O INNER JOIN ORDERITEM OI ON O.ID = OI.ORDERID WHERE O.CUSTOMERID = ?',
-    [ id ], 
+    connection.query('UPDATE ORDERITEM SET QUANTITY = QUANTITY-1 WHERE PRODUCTID = ? AND ID = ? AND',
+    [ isadd, productid, quantity ], 
     function (error, rows, fields){
         if(error){
             console.log(error)
         } else{
-            response.ok(rows, res)
-            console.log(res);
+            response.ok("Cart Updated Successfully!", res)
         }
     });
+};
 
+//auth
+exports.getToken = function(req, res) {
+    if (!req.body.email || !req.body.password){
+        return res.status(401).send('no fields');
+    }
+
+    const email = req.body.email;
+    const password = req.body.password;
+
+    // connection.query('SELECT TOP 1 FROM USER WHERE EMAIL = ?',
+    // [ email ], 
+    // function (error, rows, fields){
+    //     if(error){
+    //         console.log(error)
+    //     } else{
+            
+    //         response.ok("Cart Updated Successfully!", res)
+    //     }
+    // });
+
+    response.ok("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFyYmEiLCJwYXNzd29yZCI6ImFzZGYifQ.0pCaR8a9nJQKGREKvMcQ_mLwGkvNh-dJwkFIbbHzWm4", res)
+};
+
+exports.getUser = function(req, res){
+    passport.authenticate('jwt', {session:false, })
 };
