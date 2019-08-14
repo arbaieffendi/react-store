@@ -57,7 +57,9 @@ exports.getUser = function(req, res){
         const bearer = bearerHeader.split(' ');
         const access_token = bearer[1];
         req.token = access_token;
+        // console.log(req.token); //debug
     } else {
+        console.log(typeof bearerHeader);
         return res.sendStatus(403); //forbidden
     }
 
