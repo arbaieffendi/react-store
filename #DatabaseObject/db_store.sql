@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS `CUSTOMER` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `FIRSTNAME` varchar(50) NOT NULL,
   `LASTNAME` varchar(50) NOT NULL,
-  `EMAIL` varchar(50) NOT NULL,
+  `EMAIL` varchar(100) NOT NULL,
+  `PASSWORD` varchar(100) NOT NULL,
   PRIMARY KEY (`ID`)
 );
 CREATE TABLE IF NOT EXISTS `ORDERS` (
@@ -33,10 +34,10 @@ CREATE TABLE IF NOT EXISTS `ORDERITEM` (
 );
 
 DELETE FROM CUSTOMER;
-INSERT INTO `CUSTOMER`(FIRSTNAME, LASTNAME, EMAIL)
-VALUES('ARBAI', 'EFFENDI', 'arbaieffendi@gmail.com'),
-      ('BOB', 'MARLEY', 'bob@gmail.com'),
-      ('JEFF', 'OX', 'jeff@gmail.com');
+INSERT INTO `CUSTOMER`(FIRSTNAME, LASTNAME, EMAIL, PASSWORD)
+VALUES('ARBAI', 'EFFENDI', 'arbaieffendi@gmail.com', MD5('asdf')),
+      ('BOB', 'MARLEY', 'bob@gmail.com', MD5('asdf')),
+      ('JEFF', 'OX', 'jeff@gmail.com', MD5('asdf'));
 SELECT * FROM CUSTOMER limit 10;
 
 CREATE TABLE IF NOT EXISTS `PRODUCT` (
