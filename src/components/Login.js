@@ -5,6 +5,7 @@ import md5 from 'md5';
 import '../App.css';
 import validateInput from '../validations/login';
 import axios from 'axios';
+import {getJwt} from '../helpers/LocalStorageHelper'
 
 class Login extends React.Component {
   constructor(props){
@@ -18,6 +19,13 @@ class Login extends React.Component {
 
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
+  }
+
+  componentDidMount(){
+    const jwt = getJwt();
+    if(jwt){
+      this.props.history.push('/Products');
+    }
   }
 
   onChange(e) {

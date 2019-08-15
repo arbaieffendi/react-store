@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Button, Container, Col, Row, Modal} from 'react-bootstrap';
 import NavBar from './Navigation';
 import './products.css'
+import {getUser} from '../helpers/LocalStorageHelper'
 
 class Cart extends React.Component{
     constructor(props){
@@ -9,12 +10,18 @@ class Cart extends React.Component{
         this.state = {
             cart: null,
             modal:false,
+            user: undefined
         }        
         
         // this.addToCart = this.addToCart.bind(this);
     }
 
     componentDidMount(){
+        this.setState({
+            user: getUser()
+        })
+        console.log(this.state.user);
+
         const url = `/cart/1`;
         fetch(url)
         .then(res => res.json())

@@ -1,8 +1,7 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom'
+import {Redirect, withRouter} from 'react-router-dom'
 import {Navbar, Nav, NavDropdown} from 'react-bootstrap';
-import { getJwt, destroyJwt } from '../helpers/JWTHelper';
-import axios from 'axios';
+import { getJwt, destroyJwt } from '../helpers/LocalStorageHelper';
 
 class NavBar extends React.Component{
 
@@ -18,23 +17,21 @@ class NavBar extends React.Component{
         // if jwt is set and not expired yet, then say hi to user
         const jwt = getJwt();
         if (jwt) {
-            // this.setState({
-            //     user: null
-            // })
-            axios.post('/auth/getUser', {
-                headers: {
-                    Authorization: `Bearer ${jwt}`
-                },
-            }).then(res => {
-                console.log('then');
-                // this.setState({
-                //     user: res.data.AuthData.user,
-                // });
-                console.log(res);
-            }).catch((error) => {
-                console.log(error);
-            });
-            console.log(this.state.user);
+            fetch('/auth/getUser', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${jwt}` } },
+                ).then((response) => {
+                    response.json().then((data) => {
+                    this.setState({
+                        user: data.authData.user
+                    });
+                    localStorage.setItem('user', JSON.stringify(data.authData.user));
+                }).catch((error) => {
+                    return console.log(error);
+                })
+            })
+        } else {
+            console.log('token is not available');
         }
     }
 
@@ -60,21 +57,23 @@ class NavBar extends React.Component{
         }else{
             return (
                 <NavDropdown title={`Hi ${this.state.user.firstname}!`} id="nav-dropdown">
-                    <NavDropdown.Item eventKey="4.1">
+                    <NavDropdown.Item>
                         <Navbar.Text>Profile</Navbar.Text>
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item eventKey="4.2" onClick={this.onLogout()}>Logout</NavDropdown.Item>
+                    <NavDropdown.Item onClick={this.onLogout}>Logout</NavDropdown.Item>
                 </NavDropdown>
             )
         }
     }
 
+    // should not be call as function, otherwise it would always fired everytime page is refresh
     onLogout = () => {
         destroyJwt();
-        return <Redirect to='/Products' />
+        localStorage.clear();
+        window.location.reload();
     }
 
 }
 
-export default NavBar;
+export default withRouter(NavBar);

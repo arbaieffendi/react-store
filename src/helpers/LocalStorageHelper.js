@@ -5,3 +5,7 @@ export const getJwt = () => {
 export const destroyJwt = () => {
     localStorage.removeItem('jwt');
 }
+
+export const getUser = () => {
+    return localStorage.getItem('user');
+}

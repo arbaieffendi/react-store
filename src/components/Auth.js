@@ -1,5 +1,5 @@
 import React from 'react';
-import {getJwt} from '../helpers/JWTHelper';
+import {getJwt} from '../helpers/LocalStorageHelper';
 import {getDateNow} from '../helpers/DateHelper';
 import {withRouter} from 'react-router-dom';
 import axios from 'axios';
@@ -29,6 +29,7 @@ class Auth extends React.Component {
         axios.get('/auth/getUser', { headers: { Authorization: `Bearer ${jwt}` } }).then(res => this.setState({
             user: res.data
         })).catch(err => {
+            console.log('error getUser in Auth')
             console.log(err);
         });
     }
