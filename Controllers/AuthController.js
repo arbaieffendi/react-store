@@ -18,8 +18,6 @@ exports.getToken = function (req, res){
         return res.status(401).send('credential is required');
     }
 
-    // req.body.password = '1212';
-
     connection.query('SELECT id, firstname, lastname, email FROM CUSTOMER WHERE EMAIL = ? AND PASSWORD = ? LIMIT 1',
     [ req.body.email, req.body.password ],
     function (error, rows, fields){
