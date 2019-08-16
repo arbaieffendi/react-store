@@ -1,7 +1,7 @@
 import React from 'react';
-import {Redirect, withRouter} from 'react-router-dom'
+import {withRouter} from 'react-router-dom'
 import {Navbar, Nav, NavDropdown} from 'react-bootstrap';
-import { getJwt, destroyJwt } from '../helpers/LocalStorageHelper';
+import { getJwt, clearLocalStorage, getUser } from '../helpers/LocalStorageHelper';
 
 class NavBar extends React.Component{
 
@@ -14,26 +14,36 @@ class NavBar extends React.Component{
     }
 
     componentDidMount(){
-        // if jwt is set and not expired yet, then say hi to user
         const jwt = getJwt();
+        const users = JSON.parse(getUser());
         if (jwt) {
-            fetch('/auth/getUser', {
-                method: 'POST',
-                headers: { Authorization: `Bearer ${jwt}` } },
-                ).then((response) => {
-                    response.json().then((data) => {
-                    this.setState({
-                        user: data.authData.user
-                    });
-                    localStorage.setItem('user', JSON.stringify(data.authData.user));
-                }).catch((error) => {
-                    return console.log(error);
-                })
-            })
+            this.setState({
+                user: users
+            });
         } else {
+            // this.props.history.push('/products');
             console.log('token is not available');
         }
     }
+
+    // getUser(jwt){
+    //     fetch('/auth/getUser', {
+    //       method: 'POST',
+    //       headers: { Authorization: `Bearer ${jwt}` } },
+    //       ).then((response) => {
+    //           response.json().then((data) => {
+    //           console.log(data.authData.user);
+    //           localStorage.setItem('user', JSON.stringify(data.authData.user));
+    //           this.setState({
+    //               user: data.authData.user
+    //           })
+    //       }).catch((error) => {
+    //           console.log(error);
+    //           clearLocalStorage();
+    //           // window.location.reload();
+    //       })
+    //   }) 
+    //   }
 
     render(){
         return (
@@ -69,8 +79,7 @@ class NavBar extends React.Component{
 
     // should not be call as function, otherwise it would always fired everytime page is refresh
     onLogout = () => {
-        destroyJwt();
-        localStorage.clear();
+        clearLocalStorage();
         window.location.reload();
     }
 

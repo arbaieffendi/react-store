@@ -1,8 +1,7 @@
 import React from 'react';
-import {getJwt} from '../helpers/LocalStorageHelper';
+import {getJwt, getUser} from '../helpers/LocalStorageHelper';
 import {getDateNow} from '../helpers/DateHelper';
 import {withRouter} from 'react-router-dom';
-import axios from 'axios';
 
 class Auth extends React.Component {
     constructor(props){
@@ -13,31 +12,25 @@ class Auth extends React.Component {
         }
     }
 
-    componentDidMount(){
-        // if jwt is set and not expired yet, then authenticate else redirect to login
+    componentWillMount(){
+        // if jwt is set and not expired yet, then allow pass else redirect to login
         const jwt = getJwt();
-        console.log(jwt);
         if (!jwt) {
-            console.log(`[${getDateNow()}] no JWT`);
-            this.setState({
-                user: null
-            });
-            return;
-        }
+            return console.log(`[${getDateNow()}] no JWT`);
 
-        // if jwt is set and not expired yet, getUser
-        axios.get('/auth/getUser', { headers: { Authorization: `Bearer ${jwt}` } }).then(res => this.setState({
-            user: res.data
-        })).catch(err => {
-            console.log('error getUser in Auth')
-            console.log(err);
-        });
+        }else {
+            this.setState({
+                user: JSON.parse(getUser())
+            });
+        }
     }
  
     render(){
         const {user} = this.state;
         
         if (user === undefined || user === null){
+            console.log('here');
+            console.log(user);
             this.props.history.push('/login');
         }
 

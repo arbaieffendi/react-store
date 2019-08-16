@@ -9,3 +9,7 @@ export const destroyJwt = () => {
 export const getUser = () => {
     return localStorage.getItem('user');
 }
+
+export const clearLocalStorage = () => {
+    localStorage.clear();
+}

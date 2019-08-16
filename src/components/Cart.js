@@ -9,20 +9,21 @@ class Cart extends React.Component{
         super(props);
         this.state = {
             cart: null,
-            modal:false,
-            user: undefined
+            modal:false
         }        
         
         // this.addToCart = this.addToCart.bind(this);
     }
 
     componentDidMount(){
-        this.setState({
-            user: getUser()
-        })
-        console.log(this.state.user);
+        const user = JSON.parse(getUser());
+        console.log(user);
 
-        const url = `/cart/1`;
+        if (user === undefined || user === null){
+            return;
+        }
+
+        const url = `/cart/${user.id}`;
         fetch(url)
         .then(res => res.json())
         .then(json => this.setState({
@@ -71,7 +72,7 @@ class Cart extends React.Component{
                         {cart ? (
                             cart.map(item => (
                                     <Card className='card' key={item.ID}>
-                                        <img variant="top" src={item.IMAGE_URL} alt="no thumbnail" rounded="true" width="64px" height="64px"/>
+                                        {/* <img variant="top" src={item.IMAGE_URL} alt="no thumbnail" rounded="true" width="64px" height="64px"/> */}
                                         <Card.Body>
                                             <Col>
                                                 <Card.Title>{item.NAME}</Card.Title>

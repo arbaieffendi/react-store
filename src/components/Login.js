@@ -5,7 +5,7 @@ import md5 from 'md5';
 import '../App.css';
 import validateInput from '../validations/login';
 import axios from 'axios';
-import {getJwt} from '../helpers/LocalStorageHelper'
+import {getJwt, clearLocalStorage, getUser} from '../helpers/LocalStorageHelper'
 
 class Login extends React.Component {
   constructor(props){
@@ -22,8 +22,9 @@ class Login extends React.Component {
   }
 
   componentDidMount(){
-    const jwt = getJwt();
-    if(jwt){
+    let jwt = getJwt();
+    let user = getUser();
+    if(jwt && user){
       this.props.history.push('/Products');
     }
   }
@@ -43,18 +44,37 @@ class Login extends React.Component {
 
   onSubmit(e) {
     e.preventDefault();
-    const passwordMD5 = md5(this.state.password); // what ? MD5 ?! :D
+    const passwordMD5 = md5(this.state.password); // what ? MD5 ?! might be bcypt would be better next-time :D
 
     axios.post('/auth', {
       email: this.state.email,
       password: passwordMD5
     }).then( res => {
-        localStorage.setItem('jwt', res.data.token);
-        if (res.data.token !== undefined) {
-          this.props.history.push('/Products');
-        }
+        const jwt = res.data.token;
+        localStorage.setItem('jwt', jwt);
+        this.getUser(jwt);
     });
+    this.props.history.push('/Products');
   }
+
+  getUser(jwt){
+        fetch('/auth/getUser', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${jwt}` } },
+          ).then((response) => {
+              response.json().then((data) => {
+              console.log(data.authData.user);
+              localStorage.setItem('user', JSON.stringify(data.authData.user));
+              this.setState({
+                  user: data.authData.user
+              })
+          }).catch((error) => {
+              console.log(error);
+              clearLocalStorage();
+              // window.location.reload();
+          })
+      }) 
+      }
 
   render() {
     const {email, password, errors, isLoading} = this.state;
