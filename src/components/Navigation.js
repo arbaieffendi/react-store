@@ -67,18 +67,16 @@ class NavBar extends React.Component{
         }else{
             return (
                 <NavDropdown title={`Hi ${this.state.user.firstname}!`} id="nav-dropdown">
-                    <NavDropdown.Item>
-                        <Navbar.Text>Profile</Navbar.Text>
-                    </NavDropdown.Item>
+                    <NavDropdown.Item onClick={this.orderOnClick}>My Order</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item onClick={this.onLogout}>Logout</NavDropdown.Item>
+                    <NavDropdown.Item onClick={this.logoutOnClick}>Logout</NavDropdown.Item>
                 </NavDropdown>
             )
         }
     }
 
     // should not be call as function, otherwise it would always fired everytime page is refresh
-    onLogout = () => {
+    logoutOnClick = () => {
         clearLocalStorage();
         window.location.reload();
     }

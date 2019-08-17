@@ -13,3 +13,7 @@ export const getUser = () => {
 export const clearLocalStorage = () => {
     localStorage.clear();
 }
+
+export const getCart = () => {
+    return localStorage.getItem('cart');
+}

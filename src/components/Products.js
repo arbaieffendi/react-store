@@ -3,6 +3,7 @@ import { Card, Button, Container, Row, Modal} from 'react-bootstrap';
 // import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import './products.css';
 import NavBar from './Navigation';
+import {getCart} from '../helpers/LocalStorageHelper';
 
 class Products extends React.Component{
     constructor(props) {
@@ -11,8 +12,9 @@ class Products extends React.Component{
             products: [],
             offset: 0,
             limit: 4,
-            modal:false,
+            modal:false
         }
+        this.cart = [];
     }
 
     componentDidMount(){
@@ -35,21 +37,52 @@ class Products extends React.Component{
         }), this.loadProducts)
     }
 
-    addToCart = (product_id, product_name) => {
-        console.log('product_id : ' + product_id)
-        // const user_id = '1' // in future this one should be jwt token
-        fetch('/cart', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                user_id: this.user_id,
-                product_id: this.product_id,
-            }),
-        });
-        this.showModal(`${product_name} added to cart :)`);
+    addToCart = (item) => {
+        console.log('product');
+        console.log(item);
+        let cartString = getCart();
+        if(!cartString){
+            console.log(this.cart);
+            console.log('create cart');
+            let product = {
+                ID: item.ID,
+                PRICE: item.PRICE,
+                NAME: item.NAME,
+                QUANTITY: 1,
+                modifyAt: Date.now()
+            }
+            this.cart.push(product);
+            console.log(this.cart);
+        } else {
+            this.cart = JSON.parse(cartString);
+            console.log('add to cart');
+            //need to implement some validation here
+            let product = {
+                ID: item.ID,
+                PRICE: item.PRICE,
+                NAME: item.NAME,
+                QUANTITY: 1,
+                modifyAt: Date.now()
+            };
+            
+            this.cart.push(product);
+        }
+        localStorage.setItem('cart', JSON.stringify(this.cart));
+
+        // console.log('product_id : ' + product_id)
+        // // const user_id = '1' // in future this one should be jwt token
+        // fetch('/cart', {
+        //     method: 'POST',
+        //     headers: {
+        //         Accept: 'application/json',
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //         user_id: this.user_id,
+        //         product_id: this.product_id,
+        //     }),
+        // });
+        this.showModal(`${item.NAME} added to cart :)`);
     }
 
     showModal = (msg) =>{
@@ -80,7 +113,8 @@ class Products extends React.Component{
                                         <Card.Title>{item.NAME}</Card.Title>
                                         <Card.Text>Rp {item.PRICE} / {item.UNIT}</Card.Text>
                                     </Card.Body>
-                                    <Button variant="danger" onClick={()=>this.addToCart(item.ID, item.NAME)}>Add to cart</Button>
+                                    {/* <Button variant="danger" onClick={()=>this.addToCart(item.ID, item.NAME)}>Add to cart</Button> */}
+                                    <Button variant="danger" onClick={()=>this.addToCart(item)}>Add to cart</Button>
                                 </Card>
                         ))
                     ):(<div>Loading...</div>)

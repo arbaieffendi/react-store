@@ -13,11 +13,9 @@ class Auth extends React.Component {
     }
 
     componentWillMount(){
-        // if jwt is set and not expired yet, then allow pass else redirect to login
         const jwt = getJwt();
         if (!jwt) {
             return console.log(`[${getDateNow()}] no JWT`);
-
         }else {
             this.setState({
                 user: JSON.parse(getUser())
@@ -25,16 +23,29 @@ class Auth extends React.Component {
         }
     }
  
-    render(){
-        const {user} = this.state;
+    // render(){
+    //     const {user} = this.state;
         
-        if (user === undefined || user === null){
-            console.log('here');
-            console.log(user);
-            this.props.history.push('/login');
-        }
+    //     console.log(this.state);
+        
+    //     if (user === undefined || user === null){
+    //         console.log('here');
+    //         console.log(user);
+    //         this.props.history.push('/login');
+    //         return;
+    //     }
 
-        return this.props.children;
+    //     return this.props.children;
+    // }
+
+    render(){
+        const children = React.Children.map(this.props.children, child => {
+            return React.cloneElement(child, {
+              user: this.state.user
+            });
+          });
+
+          return children;
     }
 }
 
