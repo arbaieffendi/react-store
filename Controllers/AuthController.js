@@ -3,7 +3,6 @@ var response = require('../response');
 var connection = require('../connection');
 var md5 = require('md5');
 const jwt = require('jsonwebtoken');
-// var User = require('../Models/User.js')
 
 exports.getToken = function (req, res){
     console.log('getToken loading..')

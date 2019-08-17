@@ -8,7 +8,7 @@ var express = require('express'),
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-var routes = require('./routes/routes');
+var routes = require('./routes');
 routes(app);
 app.listen(port);
 console.log('Store Backend Server started on: ' + port + '\nRegards,\nArba');

@@ -35,6 +35,26 @@ exports.addToCart = function(req,res){
     });
 };
 
+exports.checkOut = function(req,res){
+    console.log(req.body);
+    var customerid = 1;
+    var productid = req.body.ID;
+    var quantity = req.body.QUANTITY;
+
+    let cart = JSON.parse(req.body);
+    console.log(cart);
+
+    connection.query('CALL spCheckOut(?, ?, ?)',
+    [ customerid, productid, quantity ], 
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok("Checkout Success!", res)
+        }
+    });
+};
+
 exports.updateCartQuantity = function(req,res){
     var customerid = req.body.customerid;
     var itemid = req.body.itemid;
