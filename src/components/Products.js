@@ -47,8 +47,10 @@ class Products extends React.Component{
             let product = {
                 ID: item.ID,
                 PRICE: item.PRICE,
+                UNIT: item.UNIT,
                 NAME: item.NAME,
                 QUANTITY: 1,
+                IMAGE_URL: item.IMAGE_URL,
                 modifyAt: Date.now()
             }
             this.cart.push(product);
@@ -60,8 +62,10 @@ class Products extends React.Component{
             let product = {
                 ID: item.ID,
                 PRICE: item.PRICE,
+                UNIT: item.UNIT,
                 NAME: item.NAME,
                 QUANTITY: 1,
+                IMAGE_URL: item.IMAGE_URL,
                 modifyAt: Date.now()
             };
             
@@ -103,7 +107,7 @@ class Products extends React.Component{
         return(
             <Container fluid='true'>
                 <NavBar/>
-                <h1>Product List</h1>
+                <h1 style={{paddingBottom:20}}>Product List</h1>
                 <Row>
                     {products ? (
                         products.map(item => (

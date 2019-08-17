@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, Button, Container, Col, Row, Modal} from 'react-bootstrap';
+import { Card, Button, Container, Col, Row, Modal, Image} from 'react-bootstrap';
 import NavBar from './Navigation';
 import '../assets/css/cart.css'
-import {getUser, getCart} from '../helpers/LocalStorageHelper';
+import {getUser, getCart, getJwt} from '../helpers/LocalStorageHelper';
 
 class Cart extends React.Component{
     constructor(props){
@@ -38,8 +38,6 @@ class Cart extends React.Component{
     }
 
     updateQty = (ID, isAdd) => {
-        
-        // get productid and array index
         this.cart = JSON.parse(getCart());
         let product = this.cart.filter(item => item.ID === ID);
         let index = this.cart.findIndex(item => item.ID === ID);
@@ -67,20 +65,19 @@ class Cart extends React.Component{
     }
 
     checkOut = () => {
-        // const user_id = '1' // in future this one should be jwt token
-        // fetch(`/cart/${user_id}/${ID}/${isAdd}`, {
-        //     method: 'PUT',
-        //     headers: {
-        //         Accept: 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //         user_id: this.user_id,
-        //         id: ID,
-        //         isAdd: isAdd,
-        //     }),
-        // });
-        // this.showModal(`cart updated :)`);
+        fetch(`/cart/checkout`, {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization : `Bearer ${getJwt()}`
+            },
+            body: JSON.stringify(this.cart),
+        }).then(
+            this.showModal(`cart updated :)`)
+        ).catch( (error) =>
+            this.showModal(error)
+        );
     }
 
     showModal = (msg) =>{
@@ -103,25 +100,28 @@ class Cart extends React.Component{
 
             <Container>
                 <NavBar/>
-                <h1>Shopping Cart</h1>
-                <Row>
+                <h1 style={{paddingBottom:20}}>Shopping Cart</h1>
+                <Row lg="2">
                     <Col>
                         {cart ? (
                             cart.map(item => (
-                                    <Card className='row' key={item.ID}>
-                                        {/* <img variant="top" src={item.IMAGE_URL} alt="no thumbnail" rounded="true" width="64px" height="64px"/> */}
-                                        <Card.Body>
-                                            <Col>
+                                    <Container key={item.ID}>
+                                        <Row >
+                                            <Col sm={2}>
+                                                <Image variant="top" src={item.IMAGE_URL} rounded="true" data-src="holder.js/64x64" />
+                                            </Col>
+                                            <Col sm={7} className='panel-body'>
                                                 <Card.Title>{item.NAME}</Card.Title>
                                                 <Card.Text>Rp {item.PRICE} / {item.UNIT}</Card.Text>
-                                                <Card.Text>QTY : {item.QUANTITY}</Card.Text>
                                             </Col>
-                                            <Col>
-                                                <Button className='btn btn-danger btn-circle' onClick={()=>this.updateQty(item.ID, 0)}> - </Button>
-                                                <Button className='btn btn-success btn-circle' onClick={()=>this.updateQty(item.ID, 1)}> + </Button>
+                                            <Col className="row flex-nowrap" sm={3}>
+                                                <Button className='btn btn-danger rounded-circle btn-circle' style={{padding: 0}} onClick={()=>this.updateQty(item.ID, 0)}> - </Button>
+                                                <Card.Text>{item.QUANTITY}</Card.Text>
+                                                <Button className='btn btn-success rounded-circle btn-circle' style={{padding: 0}} onClick={()=>this.updateQty(item.ID, 1)}> + </Button>
                                             </Col>
-                                        </Card.Body>
-                                    </Card>
+                                        </Row>
+                                        <hr/>
+                                    </Container>
                             ))
                         ):(<div>Loading...</div>)
                         }
@@ -132,7 +132,7 @@ class Cart extends React.Component{
                             <Col>
                                 <Card.Title>Summary</Card.Title>
                                 <Card.Text>Total {this.calculateSummary()}</Card.Text>
-                                <Button className='btn btn-danger btn-circle'>Check Out</Button>
+                                <Button className='btn btn-danger'onClick={this.checkOut}>Check Out</Button>
                             </Col>
                             </Card.Body>
                         </Card>
