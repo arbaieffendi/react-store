@@ -110,8 +110,8 @@
 .card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     text-align: center;
-    /* background-color: #f1f1f1; */
-    /* max-width: 50%; */
+    background-color: #f1f1f1;
+    max-width: 100%;
     align-content: inherit;
     justify-items: baseline;
 }
@@ -140,3 +140,19 @@
     font-size: 12px;
     line-height: 1.42857;
 }
+
+.flex-container {
+    /* We first create a flex layout context */
+    display: flex;
+    
+    /* Then we define the flow direction 
+       and if we allow the items to wrap 
+     * Remember this is the same as:
+     * flex-direction: row;
+     * flex-wrap: wrap;
+     */
+    flex-flow: row wrap;
+    
+    /* Then we define how is distributed the remaining space */
+    justify-content: space-around;
+  }

@@ -73,8 +73,11 @@ class Cart extends React.Component{
                 Authorization : `Bearer ${getJwt()}`
             },
             body: JSON.stringify(this.cart),
-        }).then(
-            this.showModal(`cart updated :)`)
+        }).then( (req, res) => {
+            console.log(req);
+            console.log(res);
+            this.showModal(`Check My Order :)`)
+        }
         ).catch( (error) =>
             this.showModal(error)
         );
@@ -101,7 +104,8 @@ class Cart extends React.Component{
             <Container>
                 <NavBar/>
                 <h1 style={{paddingBottom:20}}>Shopping Cart</h1>
-                <Row lg="2">
+                <Container className="flex-container" >
+                <Row className="justify-content-md-center flex-container">
                     <Col>
                         {cart ? (
                             cart.map(item => (
@@ -114,9 +118,9 @@ class Cart extends React.Component{
                                                 <Card.Title>{item.NAME}</Card.Title>
                                                 <Card.Text>Rp {item.PRICE} / {item.UNIT}</Card.Text>
                                             </Col>
-                                            <Col className="row flex-nowrap" sm={3}>
+                                            <Col sm={3} className="row flex-nowrap">
                                                 <Button className='btn btn-danger rounded-circle btn-circle' style={{padding: 0}} onClick={()=>this.updateQty(item.ID, 0)}> - </Button>
-                                                <Card.Text>{item.QUANTITY}</Card.Text>
+                                                <Card.Text style={{padding:3}}>{item.QUANTITY}</Card.Text>
                                                 <Button className='btn btn-success rounded-circle btn-circle' style={{padding: 0}} onClick={()=>this.updateQty(item.ID, 1)}> + </Button>
                                             </Col>
                                         </Row>
@@ -130,14 +134,16 @@ class Cart extends React.Component{
                         <Card>
                             <Card.Body>
                             <Col>
-                                <Card.Title>Summary</Card.Title>
-                                <Card.Text>Total {this.calculateSummary()}</Card.Text>
+                                <Card.Title>Total</Card.Title>
+                                <h4>Rp {this.calculateSummary()}</h4>
+                                <hr/>
                                 <Button className='btn btn-danger'onClick={this.checkOut}>Check Out</Button>
                             </Col>
                             </Card.Body>
                         </Card>
                     </Col>
                 </Row>
+                </Container>
                 <Modal show={modal} size='sm'>
                     {/* <Modal.Header closeButton onClick={this.showModal}></Modal.Header> */}
                     <Modal.Body>
