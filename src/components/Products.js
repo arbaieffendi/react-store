@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Button, Container, Row, Modal} from 'react-bootstrap';
 // import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import './products.css';
+import '../assets/css/products.css';
 import NavBar from './Navigation';
 import {getCart} from '../helpers/LocalStorageHelper';
 

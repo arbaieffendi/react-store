@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, Button, Container, Col, Row, Modal} from 'react-bootstrap';
 import NavBar from './Navigation';
-import './products.css'
-import {getUser, getCart} from '../helpers/LocalStorageHelper'
+import '../assets/css/cart.css'
+import {getUser, getCart} from '../helpers/LocalStorageHelper';
 
 class Cart extends React.Component{
     constructor(props){
@@ -55,9 +55,18 @@ class Cart extends React.Component{
         localStorage.setItem('cart', JSON.stringify(this.cart));
         console.log(this.cart);
 
-        // update value of array by id
         this.showModal(`cart updated :)`);
+    }
+    
+    calculateSummary = () => {
+        let total = 0;
+        for (let i = 0; i < this.cart.length; i++){
+            total = total + ( this.cart[i].QUANTITY * this.cart[i].PRICE);
+        }
+        return total;
+    }
 
+    checkOut = () => {
         // const user_id = '1' // in future this one should be jwt token
         // fetch(`/cart/${user_id}/${ID}/${isAdd}`, {
         //     method: 'PUT',
@@ -92,14 +101,14 @@ class Cart extends React.Component{
 
         return(
 
-            <Container fluid='true'>
+            <Container>
                 <NavBar/>
                 <h1>Shopping Cart</h1>
                 <Row>
                     <Col>
                         {cart ? (
                             cart.map(item => (
-                                    <Card className='card' key={item.ID}>
+                                    <Card className='row' key={item.ID}>
                                         {/* <img variant="top" src={item.IMAGE_URL} alt="no thumbnail" rounded="true" width="64px" height="64px"/> */}
                                         <Card.Body>
                                             <Col>
@@ -116,6 +125,17 @@ class Cart extends React.Component{
                             ))
                         ):(<div>Loading...</div>)
                         }
+                    </Col>
+                    <Col>
+                        <Card>
+                            <Card.Body>
+                            <Col>
+                                <Card.Title>Summary</Card.Title>
+                                <Card.Text>Total {this.calculateSummary()}</Card.Text>
+                                <Button className='btn btn-danger btn-circle'>Check Out</Button>
+                            </Col>
+                            </Card.Body>
+                        </Card>
                     </Col>
                 </Row>
                 <Modal show={modal} size='sm'>

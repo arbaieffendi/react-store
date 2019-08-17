@@ -2,6 +2,8 @@ import React from 'react';
 import {withRouter} from 'react-router-dom'
 import {Navbar, Nav, NavDropdown} from 'react-bootstrap';
 import { getJwt, clearLocalStorage, getUser } from '../helpers/LocalStorageHelper';
+import {FiShoppingCart} from 'react-icons/fi';
+import {GiFruitBowl} from 'react-icons/gi';
 
 class NavBar extends React.Component{
 
@@ -51,8 +53,8 @@ class NavBar extends React.Component{
                 <Navbar.Brand href="/">Simple Store</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Nav className="mr-auto">
-                    <Nav.Link href="/products">Products</Nav.Link>
-                    <Nav.Link href="/cart">Cart</Nav.Link>
+                    <Nav.Link href="/products"><GiFruitBowl/> Products</Nav.Link>
+                    <Nav.Link href="/cart"><FiShoppingCart/> Cart</Nav.Link>
                 </Nav>
                 <Navbar.Collapse className="justify-content-end">
                     {this.isLogin()}

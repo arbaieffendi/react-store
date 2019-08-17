@@ -1,0 +1,123 @@
+/* .card-deck > div {
+    display: flex;
+    flex: 1 0 0;
+    flex-direction:column;
+}
+
+.card-deck > div:not(:last-child){
+    margin-right:15px;
+}
+
+.card-deck > div:not(:first-child)
+{
+    margin-left:15px;
+} */
+
+/* @media (min-width: 34em) {
+    .card-columns {
+        -webkit-column-count: 2;
+        -moz-column-count: 2;
+        column-count: 2;
+    }
+}
+
+@media (min-width: 48em) {
+    .card-columns {
+        -webkit-column-count: 3;
+        -moz-column-count: 3;
+        column-count: 3;
+    }
+}
+
+@media (min-width: 62em) {
+    .card-columns {
+        -webkit-column-count: 4;
+        -moz-column-count: 4;
+        column-count: 4;
+    }
+} */
+
+/* .card-columns{
+    display:flex;
+    align-items:space-between;
+    justify-content:space-between;
+    flex-wrap:wrap;
+
+    .card {
+        width:22.5%; 
+        background:white;
+        padding:25px;
+        margin-bottom:20px;
+    }
+}
+
+@media (min-width: 75em) {
+    .card-columns {
+        -webkit-column-count: 5;
+        -moz-column-count: 5;
+        column-count: 5;
+    }
+} */
+
+/* @media (min-width: 100%) {
+    .card {
+        width: auto;
+        height: auto;
+        max-width: 100%
+    }
+} */
+
+/* Float four columns side by side */
+.column {
+    float: left;
+    width: 25%;
+    padding: 0 10px;
+  }
+  
+/* Remove extra left and right margins, due to padding */
+.row {
+    margin: 0 -5px;
+    flex-wrap : 'wrap';
+    align-items: inherit;
+    justify-content: space-around;
+    align-content: flex-start;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.row .btn {
+    align-items: stretch;
+    justify-content: space-around;
+    align-content: space-around;
+}
+
+/* Responsive columns */
+@media screen and (max-width: 600px) {
+.column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+    padding: 10%;
+}
+}
+
+/* Style the counter cards */
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    text-align: center;
+    /* background-color: #f1f1f1; */
+    /* max-width: 50%; */
+    align-content: inherit;
+    justify-items: baseline;
+}
+
+.card-img-top {
+    width:64px;
+    border-top-left-radius: calc(.25rem - 1px);
+    border-top-right-radius: calc(.25rem - 1px);
+}
