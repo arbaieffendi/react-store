@@ -9,5 +9,7 @@
 [/#DatabaseObject](https://github.com/arbaieffendi/React-Store-Backend/tree/master/%23DatabaseObject)
 2. Run MySQL
 3. Clone this project
-4. Open your terminal and type
+4. Install all dependency in package.json
+`npm install`
+5. Start the server
 `nodemon`
