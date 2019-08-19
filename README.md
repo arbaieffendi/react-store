@@ -1,8 +1,8 @@
 # React-Store-Backend
 
 ## Pre-Requisites
-MySQL/MariaDB
-NodeJS
+* NodeJS
+* MySQL 5.7+ / MariaDB 10.1.29
 
 ## Getting Start
 1. Execute SQL in
