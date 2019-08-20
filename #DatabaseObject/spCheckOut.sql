@@ -1,0 +1,70 @@
+/* Create By: Arba
+ Last Modified : 2019-07-12
+ Description : create new order if not exists
+ else add new orderitem into the existing order
+ update the total of order bill
+  */
+
+-- USE STORE;
+-- CALL spCheckOut(?, ?)
+
+USE STORE;
+DROP PROCEDURE IF EXISTS spCheckOut;
+CREATE PROCEDURE spCheckOut(
+    CUSTOMERID INT,
+    CART JSON
+)
+BEGIN
+
+    DECLARE ORDERID VARCHAR(50);
+    DECLARE TODAY DATETIME;
+    DECLARE TODAYORDERCOUNT INT;
+
+    DECLARE PRODUCTID INT;
+    DECLARE QUANTITY INT;
+    DECLARE i INT;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK; END;
+    
+    SET TODAY = NOW();
+    SET TODAYORDERCOUNT = (SELECT COUNT(ID) FROM ORDERS AS O WHERE O.CUSTOMERID = CUSTOMERID);
+
+    IF EXISTS (SELECT ID FROM ORDERS O WHERE O.CUSTOMERID = CUSTOMERID)
+    THEN
+        SET ORDERID = (SELECT O.ID FROM ORDERS O WHERE O.CUSTOMERID = CUSTOMERID);
+    ELSE
+        SET ORDERID = CONCAT(DATE_FORMAT(TODAY, '%Y%m%d'), CUSTOMERID, '-', TODAYORDERCOUNT+1);
+
+        -- create new order
+        INSERT INTO ORDERS (ID, CREATEDATE, CUSTOMERID, STATUS, TOTAL)
+        SELECT * FROM (SELECT ORDERID, TODAY, CUSTOMERID, 'NEW', 0) AS temp
+        WHERE NOT EXISTS (
+            SELECT ID
+            FROM ORDERS O
+            WHERE O.CUSTOMERID = CUSTOMERID
+        ) LIMIT 1;
+    END IF;
+    
+    -- add to orderitem
+
+    SET i = 0;
+    WHILE i < JSON_LENGTH(CART) DO
+
+        SET PRODUCTID = (SELECT JSON_EXTRACT(@j, CONCAT('$[', i, '].ID')));
+        SET QUANTITY = (SELECT JSON_EXTRACT(@j, CONCAT('$[', i, '].QUANTITY')));
+        
+        INSERT INTO ORDERITEM(ID, ORDERID, PRODUCTID, PRICE, QUANTITY, UNIT)
+        SELECT UUID(), ORDERID, P.ID, P.PRICE, QUANTITY, P.UNIT
+        FROM PRODUCT P
+        WHERE P.ID = PRODUCTID;
+
+        SET i = i+1;
+
+    END WHILE;
+
+    -- update orders
+    UPDATE ORDERS
+    SET TOTAL = (SELECT SUM(oi.PRICE*oi.QUANTITY) FROM orderitem oi WHERE oi.ORDERID = ORDERID)
+    WHERE ID = ORDERID;
+
+END;
