@@ -1,13 +1,16 @@
 'use strict';
 var response = require('../response');
 var connection = require('../connection');
+var auth = require('./AuthController');
+var jwt = require('jsonwebtoken');
+var config = require('../config');
 
 exports.getCartList = function(req, res) {
 
     var id = req.params.id;
 
-    connection.query('SELECT OI.*, P.NAME, P.IMAGE_URL FROM ORDERS O INNER JOIN ORDERITEM OI ON O.ID = OI.ORDERID INNER JOIN PRODUCT P ON OI.PRODUCTID = P.ID WHERE O.CUSTOMERID = ?',
-    [ id ], 
+    connection.query('SELECT OI.*, P.NAME, P.IMAGE_URL FROM ORDERS O INNER JOIN ORDERITEM OI ON O.ID = OI.ORDERID INNER JOIN PRODUCT P ON OI.PRODUCTID = P.ID WHERE O.CUSTOMERID = ? AND STATUS = ? ',
+    [ id, 'NEW' ], 
     function (error, rows, fields){
         if(error){
             console.log(error)
@@ -35,22 +38,22 @@ exports.addToCart = function(req,res){
     });
 };
 
-exports.checkOut = function(req,res){
-    console.log(req.body);
-    var customerid = 1;
-    var productid = req.body.ID;
-    var quantity = req.body.QUANTITY;
+exports.checkOut = function(req, res){
+    if (!req.decoded) return; // required middleware.CheckToken before
 
-    let cart = JSON.parse(req.body);
-    console.log(cart);
+    let user_id = req.decoded.user.id;
+    console.log(user_id);
 
-    connection.query('CALL spCheckOut(?, ?, ?)',
-    [ customerid, productid, quantity ], 
+    let cart = req.body;
+    connection.query('CALL spCheckOut(?, ?)',
+    [ user_id, cart ], 
     function (error, rows, fields){
         if(error){
-            console.log(error)
+            console.log(error);
+            response.status(500).send(error);
         } else{
-            response.ok("Checkout Success!", res)
+            console.log(res);
+            response.ok("Checkout Success!", res);
         }
     });
 };

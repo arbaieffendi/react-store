@@ -3,6 +3,7 @@ var response = require('../response');
 var connection = require('../connection');
 var md5 = require('md5');
 const jwt = require('jsonwebtoken');
+const config = require('../config');
 
 exports.getToken = function (req, res){
     console.log('getToken loading..')
@@ -61,7 +62,7 @@ exports.getUser = function(req, res){
     }
 
     // Check JWT
-    jwt.verify(req.token, 'letscontrib', (err, authData) => {
+    jwt.verify(req.token, config.secret, (err, authData) => {
         if(err) {
             console.log(err);
             res.sendStatus(403);
