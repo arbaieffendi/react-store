@@ -17,3 +17,7 @@ export const clearLocalStorage = () => {
 export const getCart = () => {
     return localStorage.getItem('cart');
 }
+
+export const clearCart = () => {
+    localStorage.removeItem('cart');
+}

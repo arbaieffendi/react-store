@@ -15,28 +15,14 @@ class Auth extends React.Component {
     componentWillMount(){
         const jwt = getJwt();
         if (!jwt) {
-            return console.log(`[${getDateNow()}] no JWT`);
+            console.log(`[${getDateNow()}] no JWT`);
+            this.props.history.push('/Login');
         }else {
             this.setState({
                 user: JSON.parse(getUser())
             });
         }
     }
- 
-    // render(){
-    //     const {user} = this.state;
-        
-    //     console.log(this.state);
-        
-    //     if (user === undefined || user === null){
-    //         console.log('here');
-    //         console.log(user);
-    //         this.props.history.push('/login');
-    //         return;
-    //     }
-
-    //     return this.props.children;
-    // }
 
     render(){
         const children = React.Children.map(this.props.children, child => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Button, Container, Col, Row, Modal, Image} from 'react-bootstrap';
 import NavBar from './Navigation';
 import '../assets/css/cart.css'
-import {getUser, getCart, getJwt} from '../helpers/LocalStorageHelper';
+import {getUser, getJwt, getCart, clearCart} from '../helpers/LocalStorageHelper';
 
 class Cart extends React.Component{
     constructor(props){
@@ -16,10 +16,6 @@ class Cart extends React.Component{
     componentWillMount(){
         const user = JSON.parse(getUser());
         console.log(user);
-
-        if (user === undefined || user === null){
-            return;
-        }
         
         let cartTemp = [];
         cartTemp = JSON.parse(getCart());
@@ -65,18 +61,17 @@ class Cart extends React.Component{
     }
 
     checkOut = () => {
-        fetch(`/cart/checkout`, {
-            method: 'PUT',
+        fetch(`/cart/checkOut`, {
+            method: 'POST',
             headers: {
-                Accept: 'application/json',
                 'Content-Type': 'application/json',
                 Authorization : `Bearer ${getJwt()}`
             },
             body: JSON.stringify(this.cart),
         }).then( (req, res) => {
-            console.log(req);
-            console.log(res);
-            this.showModal(`Check My Order :)`)
+            clearCart();
+            this.showModal(`Check My Order :)`);
+            // window.location.reload();
         }
         ).catch( (error) =>
             this.showModal(error)

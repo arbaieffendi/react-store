@@ -65,16 +65,24 @@ class NavBar extends React.Component{
 
     isLogin = () => {
         if(this.state.user === undefined || this.state.user === null){
-            return <Navbar.Text><a href="/login">Login</a></Navbar.Text>;
+            return (
+                // <Nav className="mr-auto">
+                    <Nav.Link href="/login">Login</Nav.Link>
+                // </Nav>
+            )
         }else{
             return (
                 <NavDropdown title={`Hi ${this.state.user.firstname}!`} id="nav-dropdown">
-                    <NavDropdown.Item onClick={this.orderOnClick}>My Order</NavDropdown.Item>
+                    <NavDropdown.Item onClick={this.orderOnClick}>My Orders</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={this.logoutOnClick}>Logout</NavDropdown.Item>
                 </NavDropdown>
             )
         }
+    }
+
+    orderOnClick = () => {
+        this.props.history.push('/MyOrders');
     }
 
     // should not be call as function, otherwise it would always fired everytime page is refresh

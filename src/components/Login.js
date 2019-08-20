@@ -74,7 +74,7 @@ class Login extends React.Component {
               // window.location.reload();
           })
       }) 
-      }
+  }
 
   render() {
     const {email, password, errors, isLoading} = this.state;

@@ -6,6 +6,7 @@ import Cart from './components/Cart';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './App.css';
 import Auth from './components/Auth'
+import MyOrders from './components/MyOrders';
 
 class App extends React.Component {
 
@@ -17,8 +18,9 @@ class App extends React.Component {
           <Route exact={true} path="/" render={() => <Products/> }/>
           <Route exact={true} path="/Login" render={() => <Login/> }/>
           <Route exact={true} path="/Products" render={() => <Products/> }/>
+          <Route exact={true} path="/Cart" render={() => <Cart/> }/>
           <Auth>
-            <Route exact={true} path="/Cart" render={() => <Cart/> }/>
+            <Route exact={true} path="/MyOrders" render={() => <MyOrders/> }/>
           </Auth>
         </Switch>
         {/* </div> */}
