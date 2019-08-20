@@ -13,10 +13,9 @@ exports.getCartList = function(req, res) {
     [ id, 'NEW' ], 
     function (error, rows, fields){
         if(error){
-            console.log(error)
+            console.log(error);
         } else{
-            response.ok(rows, res)
-            console.log(res);
+            response.ok(rows, res);
         }
     });
 
@@ -45,12 +44,14 @@ exports.checkOut = function(req, res){
     console.log(user_id);
 
     let cart = req.body;
-    connection.query('CALL spCheckOut(?, ?)',
-    [ user_id, cart ], 
+    console.log(cart);
+    console.log(JSON.stringify(cart));
+    connection.query('CALL spCheckOut(?,?);',
+    [ user_id, JSON.stringify(cart) ], 
     function (error, rows, fields){
         if(error){
             console.log(error);
-            response.status(500).send(error);
+            res.status(500).send(error);
         } else{
             console.log(res);
             response.ok("Checkout Success!", res);
