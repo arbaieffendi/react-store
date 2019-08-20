@@ -9,7 +9,7 @@ exports.getCartList = function(req, res) {
 
     var id = req.params.id;
 
-    connection.query('SELECT OI.*, P.NAME, P.IMAGE_URL FROM ORDERS O INNER JOIN ORDERITEM OI ON O.ID = OI.ORDERID INNER JOIN PRODUCT P ON OI.PRODUCTID = P.ID WHERE O.CUSTOMERID = ? AND STATUS = ? ',
+    connection.query('SELECT * FROM ORDERS O WHERE O.CUSTOMERID = ? AND STATUS = ? ',
     [ id, 'NEW' ], 
     function (error, rows, fields){
         if(error){
